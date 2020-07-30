@@ -28,7 +28,7 @@ $query_delete->execute([$idusuario]);
 	if(empty($_REQUEST['id']) || $_REQUEST['id'] == 1 )
 	{
 		header("location: lista_usuarios.php");
-		mysqli_close($conection);
+		//mysqli_close($conection);
 	}else{
 		$idusuario = $_REQUEST['id'];
 		// $query = mysqli_query($conection,"SELECT u.nombre,u.usuario,r.rol
