@@ -4,17 +4,13 @@
 	{
 		header("location: ./");
 	}
-	
 	include "../conexion.php";
-
-	if(!empty($_POST))
-	{
+	if(!empty($_POST))	{
 		$alert='';
 		if(empty($_POST['nombre']) || empty($_POST['correo']) || empty($_POST['usuario']) || empty($_POST['clave']) || empty($_POST['rol']))
 		{
 			$alert='<p class="msg_error">Todos los campos son obligatorios.</p>';
 		}else{
-
 			$nombre = $_POST['nombre'];
 			$email  = $_POST['correo'];
 			$user   = $_POST['usuario'];
@@ -22,34 +18,22 @@
 			$rol    = $_POST['rol'];
 			// $query = mysqli_query($conection,"SELECT * FROM usuario WHERE usuario = '$user' OR correo = '$email' ");
 			// $result = mysqli_fetch_array($query);
-$query = $conexion->prepare('select * from usuario where 
-								usuario = ? OR correo = ?;');
+$query = $conexion->prepare('select * from usuario where usuario = ? OR correo = ?;');
 $query->execute([$user, $email]);
 $data = $query->fetch(PDO::FETCH_BOTH);
-
-			if($data > 0){
-				$alert='<p class="msg_error">El correo o el usuario ya existe.</p>';
+if($data > 0){
+	$alert='<p class="msg_error">El correo o el usuario ya existe.</p>';
 			}else{
-
 $query_insert = $conexion->prepare("INSERT INTO usuario(nombre,correo,usuario,clave,rol) VALUES (?,?,?,?,?);");
 	$resultado = $query_insert->execute([$nombre,$email,$user,$clave,$rol]);
 				// $query_insert = mysqli_query($conection,"INSERT INTO usuario(nombre,correo,usuario,clave,rol)
 				// 		VALUES('$nombre','$email','$user','$clave','$rol')");
-
 	if($resultado){
-
-
-					$alert='<p class="msg_save">Usuario creado correctamente.</p>';
+		$alert='<p class="msg_save">Usuario creado correctamente.</p>';
 	}else{
-				
-
-					$alert='<p class="msg_error">Error al crear el usuario.</p>';
-				
-				}
-			}
-	}	}
+		$alert='<p class="msg_error">Error al crear el usuario.</p>';
+		}}}}
  ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,12 +44,10 @@ $query_insert = $conexion->prepare("INSERT INTO usuario(nombre,correo,usuario,cl
 <body>
 	<?php include "includes/header.php"; ?>
 	<section id="container">
-		
 		<div class="form_register">
 			<h1>Registro usuario</h1>
 			<hr>
 			<div class="alert"><?php echo isset($alert) ? $alert : ''; ?></div>
-
 			<form action="" method="post">
 				<label for="nombre">Nombre</label>
 				<input type="text" name="nombre" id="nombre" placeholder="Nombre completo">
@@ -77,52 +59,31 @@ $query_insert = $conexion->prepare("INSERT INTO usuario(nombre,correo,usuario,cl
 				<input type="password" name="clave" id="clave" placeholder="Clave de acceso">
 				<label for="rol">Tipo Usuario</label>
 			<?php 
-
 $query_rol = $conexion->prepare('select * from rol;');
 $query_rol->execute();
 $resultado_rol = $query_rol->fetchAll(PDO::FETCH_OBJ);
 	//>fetch(PDO::FETCH_BOTH);
-
-
 					// $query_rol = mysqli_query($conection,"SELECT * FROM rol");
 					// mysqli_close($conection);
 					// $result_rol = mysqli_num_rows($query_rol);
-
-				 ?>
-
-				<select name="rol" id="rol">
-					<?php 
-if($query_rol->rowCount() > 0)
-						{
+	?>
+	<select name="rol" id="rol">
+<?php 
+if($query_rol->rowCount() > 0){
 							// while ($rol = mysqli_fetch_array($query_rol)) {
 							//while ($query_rol->rowCount() <= 3) {
-foreach($resultado_rol as $resultado) { 
-					?>
+foreach($resultado_rol as $resultado) { ?>
 <option value="<?php echo $resultado->idrol ; ?>">
 	<?php echo $resultado->rol ; ?>
-		
 	</option>
-					<?php 
-								# code...
-							}
-							
-						}
-					 ?>
-				</select>
-				<input type="submit" value="Crear usuario" class="btn_save">
-
+<?php 
+ }} ?>
+</select>
+	<input type="submit" value="Crear usuario" class="btn_save">
 			</form>
-
-
 		</div>
-
-
 	</section>
 	<?php include "includes/footer.php"; ?>
-	<script type="text/javascript" src="js/jquery.min.js" ></script>
-
-	 <script type="text/javascript" src="js/java.js"></script>
-
-
+	
 </body>
 </html>

@@ -5,7 +5,6 @@
 		header("location: ./");
 	}
 	include "../conexion.php";
-
 	if(!empty($_POST))
 	{
 		if($_POST['idusuario'] == 1){
@@ -14,42 +13,41 @@
 			exit;
 		}
 		$idusuario = $_POST['idusuario'];
-
 		//$query_delete = mysqli_query($conection,"DELETE FROM usuario WHERE idusuario =$idusuario ");
-		$query_delete = mysqli_query($conection,"UPDATE usuario SET estatus = 0 WHERE idusuario = $idusuario ");
-		mysqli_close($conection);
+		
+		// $query_delete = mysqli_query($conection,"UPDATE usuario SET estatus = 0 WHERE idusuario = $idusuario ");
+		// mysqli_close($conection);
+
+$query_delete = $conexion->prepare('UPDATE usuario SET estatus = 0 WHERE idusuario = ?;');
+$query_delete->execute([$idusuario]);
 		if($query_delete){
 			header("location: lista_usuarios.php");
 		}else{
 			echo "Error al eliminar";
-		}
-
-	}
-
-
-
-
+		}}
 	if(empty($_REQUEST['id']) || $_REQUEST['id'] == 1 )
 	{
 		header("location: lista_usuarios.php");
 		mysqli_close($conection);
 	}else{
-
 		$idusuario = $_REQUEST['id'];
-
-		$query = mysqli_query($conection,"SELECT u.nombre,u.usuario,r.rol
-												FROM usuario u
-												INNER JOIN
-												rol r
-												ON u.rol = r.idrol
-												WHERE u.idusuario = $idusuario ");
+		// $query = mysqli_query($conection,"SELECT u.nombre,u.usuario,r.rol
+		// 										FROM usuario u
+		// 										INNER JOIN
+		// 										rol r
+		// 										ON u.rol = r.idrol
+		// 										WHERE u.idusuario = $idusuario ");
 		
-		mysqli_close($conection);
-		$result = mysqli_num_rows($query);
+		// mysqli_close($conection);
+		// $result = mysqli_num_rows($query);
 
+$query=$conexion->prepare("SELECT u.nombre,u.usuario,r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol WHERE u.idusuario = ? ");
+$query->execute([$idusuario]);
+$result = $query->fetchAll(PDO::FETCH_ASSOC);
 		if($result > 0){
-			while ($data = mysqli_fetch_array($query)) {
-				# code...
+		//	while ($data = mysqli_fetch_array($query)) {
+foreach($result as $data) {
+
 				$nombre = $data['nombre'];
 				$usuario = $data['usuario'];
 				$rol     = $data['rol'];
@@ -60,10 +58,7 @@
 
 
 	}
-
-
  ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,15 +74,12 @@
 			<p>Nombre: <span><?php echo $nombre; ?></span></p>
 			<p>usuario: <span><?php echo $usuario; ?></span></p>
 			<p>Tipo Usuario: <span><?php echo $rol; ?></span></p>
-
 			<form method="post" action="">
 				<input type="hidden" name="idusuario" value="<?php echo $idusuario; ?>">
 				<a href="lista_usuarios.php" class="btn_cancel">Cancelar</a>
 				<input type="submit" value="Aceptar" class="btn_ok">
 			</form>
 		</div>
-
-
 	</section>
 	<?php include "includes/footer.php"; ?>
 </body>
