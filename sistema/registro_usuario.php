@@ -24,8 +24,8 @@
 			// $result = mysqli_fetch_array($query);
 $query = $conexion->prepare('select * from usuario where 
 								usuario = ? OR correo = ?;');
-	$query->execute([$user, $email]);
-	$data = $query->fetch(PDO::FETCH_BOTH);
+$query->execute([$user, $email]);
+$data = $query->fetch(PDO::FETCH_BOTH);
 
 			if($data > 0){
 				$alert='<p class="msg_error">El correo o el usuario ya existe.</p>';
@@ -77,9 +77,10 @@ $query_insert = $conexion->prepare("INSERT INTO usuario(nombre,correo,usuario,cl
 				<input type="password" name="clave" id="clave" placeholder="Clave de acceso">
 				<label for="rol">Tipo Usuario</label>
 			<?php 
-			$query_rol = $conexion->prepare('select * from rol;');
-	$query_rol->execute();
-	$resultado_rol = $query_rol->fetchAll(PDO::FETCH_OBJ)
+
+$query_rol = $conexion->prepare('select * from rol;');
+$query_rol->execute();
+$resultado_rol = $query_rol->fetchAll(PDO::FETCH_OBJ);
 	//>fetch(PDO::FETCH_BOTH);
 
 
@@ -91,7 +92,7 @@ $query_insert = $conexion->prepare("INSERT INTO usuario(nombre,correo,usuario,cl
 
 				<select name="rol" id="rol">
 					<?php 
-						if($query_rol > 0)
+if($query_rol->rowCount() > 0)
 						{
 							// while ($rol = mysqli_fetch_array($query_rol)) {
 							//while ($query_rol->rowCount() <= 3) {

@@ -26,8 +26,8 @@ $pass=$_POST['clave'];
 			// $result = mysqli_num_rows($query);
 $sentencia = $conexion->prepare('select * from usuario where 
 								usuario = ? and clave = ?;');
-	$sentencia->execute([$user, $pass]);
-	$data = $sentencia->fetch(PDO::FETCH_BOTH);
+$sentencia->execute([$user, $pass]);
+$data = $sentencia->fetch(PDO::FETCH_BOTH);
 	//fetch(PDO::FETCH_OBJ);
 			if($data > 0)
 			{
