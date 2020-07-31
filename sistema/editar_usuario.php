@@ -6,7 +6,8 @@ session_start();
 	include "../conexion.php";
 	if(!empty($_POST)){
 		$alert='';
-		if(empty($_POST['nombre']) || empty($_POST['correo']) || empty($_POST['usuario'])  || empty($_POST['rol']))
+		if(empty($_POST['nombre']) || empty($_POST['correo']) || empty($_POST['usuario'])  
+			|| empty($_POST['rol']))
 		{
 			$alert='<p class="msg_error">Todos los campos son obligatorios.</p>';
 		}else{
@@ -41,7 +42,7 @@ $sql_update->execute([$nombre,$email,$user,$rol,$idUsuario]);
 					// 										WHERE idusuario= $idUsuario ");
 $sql_update=$conexion->prepare("UPDATE usuario SET nombre = ?, correo=?,usuario=?,clave=?, rol=?
  WHERE idusuario= ? ;");
-$sql_update->execute([$nombre,$email,$user,$clave,$clave,$idUsuario]);
+$sql_update->execute([$nombre,$email,$user,$clave,$rol,$idUsuario]);
 				}
 				if($sql_update){
 					$alert='<p class="msg_save">Usuario actualizado correctamente.</p>';
@@ -116,7 +117,7 @@ foreach($result_sql as $data) {
 				<input type="text" name="clave" id="clave" placeholder="Clave de acceso"  value="<?php echo $clave; ?>" >
 				<label for="rol">Tipo Usuario</label>                                                                           
  				<?php 
-				require_once('../conexion.php');
+			//	require_once('../conexion.php');
 				//	include "../conexion.php";
 					// $query_rol = mysqli_query($conection,"SELECT * FROM rol");
 					// mysqli_close($conection);

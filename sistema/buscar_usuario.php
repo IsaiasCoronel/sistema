@@ -66,17 +66,25 @@
 			}
 
 
-			$sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM usuario 
+			// $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM usuario 
+			// 													WHERE ( idusuario LIKE '%$busqueda%' OR 
+			// 															nombre LIKE '%$busqueda%' OR 
+			// 															correo LIKE '%$busqueda%' OR 
+			// 															usuario LIKE '%$busqueda%' 
+			// 															$rol  ) 
+			// 													AND estatus = 1  ");
+			// $result_register = mysqli_fetch_array($sql_registe);
+			// $total_registro = $result_register['total_registro'];
+$sql_registe = $conexion->prepare("SELECT COUNT(*) as total_registro FROM usuario 
 																WHERE ( idusuario LIKE '%$busqueda%' OR 
-																		nombre LIKE '%$busqueda%' OR 
-																		correo LIKE '%$busqueda%' OR 
-																		usuario LIKE '%$busqueda%' 
-																		$rol  ) 
-																AND estatus = 1  ");
-
-			$result_register = mysqli_fetch_array($sql_registe);
-			$total_registro = $result_register['total_registro'];
-
+			 															nombre LIKE '%$busqueda%' OR 
+			 															correo LIKE '%$busqueda%' OR 
+			 															usuario LIKE '%$busqueda%' 
+			 															$rol  ) 
+			 													AND estatus = 1  ");
+$sql_registe->execute();
+$resultado_registro = $sql_registe->fetch(PDO::FETCH_ASSOC);
+$total_registro = $resultado_registro['total_registro'];
 			$por_pagina = 5;
 
 			if(empty($_GET['pagina']))
@@ -89,22 +97,34 @@
 			$desde = ($pagina-1) * $por_pagina;
 			$total_paginas = ceil($total_registro / $por_pagina);
 
-			$query = mysqli_query($conection,"SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol 
-										WHERE 
-										( u.idusuario LIKE '%$busqueda%' OR 
-											u.nombre LIKE '%$busqueda%' OR 
-											u.correo LIKE '%$busqueda%' OR 
-											u.usuario LIKE '%$busqueda%' OR 
-											r.rol    LIKE  '%$busqueda%' ) 
-										AND
-										estatus = 1 ORDER BY u.idusuario ASC LIMIT $desde,$por_pagina 
-				");
-			mysqli_close($conection);
-			$result = mysqli_num_rows($query);
-			if($result > 0){
+			// $query = mysqli_query($conection,"SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol 
+			// 							WHERE 
+			// 							( u.idusuario LIKE '%$busqueda%' OR 
+			// 								u.nombre LIKE '%$busqueda%' OR 
+			// 								u.correo LIKE '%$busqueda%' OR 
+			// 								u.usuario LIKE '%$busqueda%' OR 
+			// 								r.rol    LIKE  '%$busqueda%' ) 
+			// 			AND	estatus = 1 ORDER BY u.idusuario ASC LIMIT $desde,$por_pagina");
+			// mysqli_close($conection);
+			// $result = mysqli_num_rows($query);
+			$query = $conexion->prepare("SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol 
+			 							WHERE 
+			 							( u.idusuario LIKE '%$busqueda%' OR 
+			 								u.nombre LIKE '%$busqueda%' OR 
+			 								u.correo LIKE '%$busqueda%' OR 
+			 								u.usuario LIKE '%$busqueda%' OR 
+			 								r.rol    LIKE  '%$busqueda%' ) 
+			 			AND	estatus = 1 ORDER BY u.idusuario ASC LIMIT $desde,$por_pagina");
+$query->execute();
+$result_bus = $query->fetchAll(PDO::FETCH_ASSOC);
+//$result = $result_bus['total_registro'];
 
-				while ($data = mysqli_fetch_array($query)) {
-					
+
+			if($result_bus > 0){
+
+				//while ($data = mysqli_fetch_array($query)) {
+								foreach($result_bus as $data) {
+		
 			?>
 				<tr>
 					<td><?php echo $data["idusuario"]; ?></td>

@@ -37,10 +37,12 @@
 
 			// $result_register = mysqli_fetch_array($sql_registe);
 			// $total_registro = $result_register['total_registro'];
-$sql_registro = $conexion->prepare('SELECT COUNT(*) as total_registro FROM usuario WHERE estatus = 1');
-$sql_registro->execute();
-$resultado_registro = $sql_registro->fetch(PDO::FETCH_ASSOC);
-$total_registro = $resultado_registro['total_registro'];
+$sql_registe = $conexion->prepare('SELECT COUNT(*) as total_registro 
+	FROM usuario WHERE estatus = 1');
+$sql_registe->execute();
+$result_register = $sql_registe->fetch(PDO::FETCH_BOTH);
+$total_registro = $result_register['total_registro'];
+echo $total_registro; 
 $por_pagina = 5;
 if(empty($_GET['pagina'])){
 				$pagina = 1;
