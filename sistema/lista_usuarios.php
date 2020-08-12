@@ -1,20 +1,19 @@
-<?php 
-	session_start();
-	if($_SESSION['rol'] != 1)
-	{
-		header("location: ./");
-	}
-		include "../conexion.php";	
- ?>
+<?php
+session_start();
+if ($_SESSION['rol'] != 1) {
+    header("location: ./");
+}
+include "../conexion.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<?php include "includes/scripts.php"; ?>
+	<?php include "includes/scripts.php";?>
 	<title>Lista de usuarios</title>
 </head>
 <body>
-	<?php include "includes/header.php"; ?>
+	<?php include "includes/header.php";?>
 	<section id="container">
 		<h1>Lista de usuarios</h1>
 		<a href="registro_usuario.php" class="btn_new">Crear usuario</a>
@@ -31,79 +30,65 @@
 				<th>Rol</th>
 				<th>Acciones</th>
 			</tr>
-		<?php 
-			//Paginador
-			// $sql_registe = mysqli_query($conection,"SELECT COUNT(*) as total_registro FROM usuario WHERE estatus = 1 ");
-
-			// $result_register = mysqli_fetch_array($sql_registe);
-			// $total_registro = $result_register['total_registro'];
-$sql_registe = $conexion->prepare('SELECT COUNT(*) as total_registro 
-	FROM usuario WHERE estatus = 1');
+		<?php
+//Paginador
+$sql_registe = $conexion->prepare('SELECT COUNT(*) as total_registro FROM usuario WHERE estatus = 1');
 $sql_registe->execute();
 $result_register = $sql_registe->fetch(PDO::FETCH_BOTH);
-$total_registro = $result_register['total_registro'];
-echo $total_registro; 
+$total_registro  = $result_register['total_registro'];
+echo $total_registro;
 $por_pagina = 5;
-if(empty($_GET['pagina'])){
-				$pagina = 1;
-			}else{
-				$pagina = $_GET['pagina'];}
-$desde = ($pagina-1) * $por_pagina;
+if (empty($_GET['pagina'])) {
+    $pagina = 1;
+} else {
+    $pagina = $_GET['pagina'];}
+$desde         = ($pagina - 1) * $por_pagina;
 $total_paginas = ceil($total_registro / $por_pagina);
-			// $query = mysqli_query($conection,"SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol 
-			// 	FROM usuario u INNER JOIN rol r ON u.rol = r.idrol WHERE estatus = 1 
-			// 	ORDER BY u.idusuario ASC LIMIT $desde,$por_pagina ");
-
-// $queryMostrar = $conexion->prepare('SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol 
-// 	FROM usuario u INNER JOIN rol r ON u.rol = r.idrol WHERE estatus = 1 
-// 	ORDER BY u.idusuario LIMIT ?,? ' );
-$sql="SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol WHERE estatus = 1 
-ORDER BY u.idusuario ASC LIMIT  $desde,$por_pagina" ;
-$queryMostrar=$conexion->prepare($sql);
+$sql           = "SELECT u.idusuario, u.nombre, u.correo, u.usuario, r.rol FROM usuario u INNER JOIN rol r ON u.rol = r.idrol WHERE estatus = 1
+ORDER BY u.idusuario ASC LIMIT  $desde,$por_pagina";
+$queryMostrar = $conexion->prepare($sql);
 $queryMostrar->execute();
 $resultadoListaRol = $queryMostrar->fetchAll(PDO::FETCH_ASSOC);
-			//mysqli_close($conection);
-			//$result = mysqli_num_rows($query);
-	if($resultadoListaRol > 0){
-				//while ($data = mysqli_fetch_array($query)) {
-					foreach($resultadoListaRol as $resultadoLista) {
-			?>
+//mysqli_close($conection);
+
+if ($resultadoListaRol > 0) {
+    foreach ($resultadoListaRol as $resultadoLista) {
+        ?>
 				<tr>
 				 <td><?php echo $resultadoLista['idusuario']; ?></td>
 					<td><?php echo $resultadoLista['nombre']; ?></td>
 					<td><?php echo $resultadoLista['correo']; ?></td>
 					<td><?php echo $resultadoLista['usuario']; ?></td>
-					<td><?php echo $resultadoLista['rol'];?></td>
+					<td><?php echo $resultadoLista['rol']; ?></td>
 					<td>
 						<a class="link_edit" href="editar_usuario.php?id=<?php echo $resultadoLista['idusuario']; ?>">Editar</a>
-					<?php if($resultadoLista['idusuario'] != 1){ ?>
+					<?php if ($resultadoLista['idusuario'] != 1) {?>
 					<a class="link_delete" href="eliminar_confirmar_usuario.php?id=<?php echo $resultadoLista['idusuario']; ?>">Eliminar</a>
-             		<?php }	 ?>
+             		<?php }?>
 					</td>
 				</tr>
-		<?php }	} ?>
+		<?php }}?>
 		</table>
 	<div class="paginador">
 			<ul>
-			<?php 
-				if($pagina != 1)
-				{	 ?>
+			<?php
+if ($pagina != 1) {?>
 				<li><a href="?pagina=<?php echo 1; ?>">|<</a></li>
-				<li><a href="?pagina=<?php echo $pagina-1; ?>"><<</a></li>
+				<li><a href="?pagina=<?php echo $pagina - 1; ?>"><<</a></li>
 			<?php }
-			for ($i=1; $i <= $total_paginas; $i++) { 
-					# code...
-					if($i == $pagina){
-						echo '<li class="pageSelected">'.$i.'</li>';
-					}else{
-						echo '<li><a href="?pagina='.$i.'">'.$i.'</a></li>';}}
-				if($pagina != $total_paginas){ ?>
+for ($i = 1; $i <= $total_paginas; $i++) {
+    # code...
+    if ($i == $pagina) {
+        echo '<li class="pageSelected">' . $i . '</li>';
+    } else {
+        echo '<li><a href="?pagina=' . $i . '">' . $i . '</a></li>';}}
+if ($pagina != $total_paginas) {?>
 				<li><a href="?pagina=<?php echo $pagina + 1; ?>">>></a></li>
 				<li><a href="?pagina=<?php echo $total_paginas; ?> ">>|</a></li>
-			<?php } ?>
+			<?php }?>
 			</ul>
 		</div>
 	</section>
-	<?php include "includes/footer.php"; ?>
+	<?php include "includes/footer.php";?>
 </body>
 </html>
